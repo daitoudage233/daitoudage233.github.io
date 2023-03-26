@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"daitoudage233.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SAMBA所需的软件： 1、samba：这个软件主要包含了SAMBA的主要服务程序（smbd及nmbd）,SAMBA相关的文件,以及其它与SAMBA相关的logrotate配置文件及开机默认选项文件等。 2、samba-common:这个软件主要提供了SAMBA的主要配置文件（smb.conf）,smb.conf语法检验的测试程序(testparm)等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="samba">
+<meta property="og:url" content="https://daitoudage233.github.io/2022/06/21/samba/index.html">
+<meta property="og:site_name" content="时光啊时光">
+<meta property="og:description" content="SAMBA所需的软件： 1、samba：这个软件主要包含了SAMBA的主要服务程序（smbd及nmbd）,SAMBA相关的文件,以及其它与SAMBA相关的logrotate配置文件及开机默认选项文件等。 2、samba-common:这个软件主要提供了SAMBA的主要配置文件（smb.conf）,smb.conf语法检验的测试程序(testparm)等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-21T14:14:10.000Z">
+<meta property="article:modified_time" content="2022-06-21T14:14:47.708Z">
+<meta property="article:author" content="带头大哥23b">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://daitoudage233.github.io/2022/06/21/samba/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>samba | 时光啊时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">时光啊时光</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daitoudage233.github.io/2022/06/21/samba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="带头大哥23b">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="时光啊时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          samba
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-06-21 22:14:10 / 修改时间：22:14:47" itemprop="dateCreated datePublished" datetime="2022-06-21T22:14:10+08:00">2022-06-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>SAMBA所需的软件：</p>
+<p>1、samba：这个软件主要包含了SAMBA的主要服务程序（smbd及nmbd）,SAMBA相关的文件,以及其它与SAMBA相关的logrotate配置文件及开机默认选项文件等。</p>
+<p>2、samba-common:这个软件主要提供了SAMBA的主要配置文件（smb.conf）,smb.conf语法检验的测试程序(testparm)等。<span id="more"></span></p>
+<p>3、smbclient:这个软件则提供了当Linux做为SAMBA Client端时，所需要的工具指令，例如smbclient命令用于查看Windows共享文件等。</p>
+<p><strong>一、samba相关软件安装</strong><br>-———————————————————————-<br>root@debian:~# apt install samba   #同时会一起把samba-common软件一起安装</p>
+<p>root@debian:~# apt install smbclient<br>-———————————————————————-</p>
+<p><strong>二、查看nmbd和smbd服务的状态，并设置开机启动</strong></p>
+<p>1、查看服务状态，如果没有启动启动他<br>-—————————————————–<br>root@debian:<del># systemctl status nmbd.service<br>root@debian:</del># systemctl status smbd.service<br>-—————————————————–</p>
+<p>2、设置服务器开机启动<br>-—————————————————–<br>root@debian:<del># systemctl enable nmbd.service<br>root@debian:</del># systemctl enable smbd.service<br>-—————————————————–</p>
+<p><strong>三、Samba服务器配置</strong></p>
+<p>在安装了Samba服务软件后，会自动在Linux系统中生成一系列的配置文件，了解它们的用途是配置Samba服务器所必须的。</p>
+<p>1、主要配置文件 &#x2F;etc&#x2F;Samba&#x2F;smb.conf<br>这是Samba服务的主配置文件，文件由一系列段和选项构成.一个段由一对方括号中的段名开始,直到下一个段名结束，主要由全局设置（Global Settings）和共享定义（Share Definitions）两部分组成。其中全局设置定义了对影响整个Samba系统运行的全局选项，用于设置整个系统的规则，如果在其他段中没有再对这些选项进行重新设置的话，就以全局选项为主：共享定义则是对系统中共享资源进行定义，该部分可以由多个段组成，其中常见的包括：用户主目录段，共享目录和打印机段，每个段中可以再定义详细的共享选项。smb.conf文件的格式如下所示：<br>-—————————————————————————</p>
+<p>#&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; Global Settings &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>[global]   #全局选项  </p>
+<p>#&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; Share Definitions &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>[homes]    #共享选项</p>
+<p>[printers]  #共享选项</p>
+<p>-—————————————————————————-<br>smb.conf配置文件中使用;号和#号作为注释符，凡是使用这两个符号开头的行都会被Samba视为注释行而忽略处理，这个配置文件中，大小写是没关系的，因为Windows不分大小写。配置文件中选项的格式如下所示。<br>-————————<br>选项名称 &#x3D; 选项值<br>-————————</p>
+<p><strong>四、常用的全局选项及说明如下所示</strong></p>
+<p>先说一下samba定义的变量：<br>%S &#x3D; 当前服务名（如果有的话）<br>%P &#x3D; 当前服务的根目录（如果有的话）<br>%u &#x3D; 当前服务的用户名（如果有的话）<br>%g &#x3D; 当前用户说在的主工作组<br>%U &#x3D; 当前对话的用户名<br>%G &#x3D; 当前对话的用户的主工作组<br>%H &#x3D; 当前服务的用户的Home目录<br>%v &#x3D; Samba服务的版本号。<br>%h &#x3D; 运行Samba服务机器的主机名<br>%m &#x3D; 客户机的NETBIOS名称<br>%L &#x3D; 服务器的NETBIOS名称<br>%M &#x3D; 客户机的主机名<br>%N &#x3D; NIS服务器名<br>%p &#x3D; NIS服务的Home目录<br>%R &#x3D; 说采用的协议等级(值可以是CORE, COREPLUS, LANMAN1, LANMAN2，NT1)<br>%d &#x3D; 当前服务进程的ID<br>%a &#x3D; 客户机的结构（只能识别几项：Samba，WfWg，WinNT，Win95）<br>%I &#x3D; 客户机的IP<br>%T &#x3D; 当前日期和时间</p>
+<p><strong>1、workgroup</strong><br>该选项设置Samba服务器所属工作组名称，通过网上邻居可以从该工作组中找到该Samba服务器。默认设置如下：</p>
+<p>workgroup &#x3D; WORKGROUP<br>-——————————————————<br><strong>2、wins support</strong><br>该选项设置Samba服务器是否作为WINS服务器。如果要启用该选项，则不能设置wins server选项，默认设置如下：</p>
+<p>#  wins support &#x3D; no<br>选项默认都是被注释掉了<br>-——————————————————<br><strong>3、wins serve</strong></p>
+<p>该选项指定WINS服务器的IP地址或主机名。默认设置如下：</p>
+<p>;  wins server &#x3D; w.x.y.z<br>选项默认都是被注释掉了<br>-——————————————————<br><strong>4、interfaces 和bind interfaces only &#x3D; yes</strong><br>如果服务器有多个IP地址或网络接口，可以使用interfaces选项把IP地址或网络接口列出来。如果bind interfaces only选项设置为yes，则表示Samba将绑定（监听）interfaces选项所设置的IP地址或网络接口，只通过这个些IP地址或网络接口提供服务，默认设置如下：</p>
+<p>;  interfaces &#x3D; 127.0.0.0&#x2F;8 eth0</p>
+<p>;  bind interfaces only &#x3D; yes<br>上面两个选项默认都是被注释掉了<br>-——————————————————<br><strong>5、dns proxy</strong><br>该选项设置是否启用DNS代理功能，默认设置如下：</p>
+<p>dns proxy &#x3D; no<br>-——————————————————<br><strong>6、log file</strong><br>该选项用来设置Samba日志文件的存放位置和文件名称，默认设置如下：</p>
+<p>log file &#x3D; &#x2F;var&#x2F;log&#x2F;samba&#x2F;log.%m<br>这个选项中的.%m是Samba配置文件的保留变量，表示客户端的NetBIOS名称。<br>-——————————————————<br><strong>7、max log size</strong><br>日志文件最大能达到多少Kbytes，如果超过该限制，则Samba自动在当前的日志文件名后面加上“.old”然后创建一个新的日志文件继续写入。如果为0,则表示没有大小限制。默认设置如下：</p>
+<p>max log size &#x3D; 1000<br>-——————————————————<br><strong>8、syslog only</strong><br>设置Samba只通过syslog进行日志记录。默认设置如下：</p>
+<p>#  syslog only &#x3D; no<br>默认这个选项被注销掉<br>-——————————————————<br><strong>9、syslog</strong><br>syslog的日志级(0,err)(1,warning)(2,notice)(3,ifno)(4或以上，debug)。默认设置如下：</p>
+<p>syslog &#x3D; 0<br>-——————————————————<br><strong>10、server role</strong><br>服务器角色。定义Samba将以何种模式操作。可能的值是“独立服务器”、“成员服务器”、“经典主域服务器”、“经典备份域控制器”、“活动目录域控制器”，默认设置如下：</p>
+<p>server role &#x3D; standalone server<br>-——————————————————<br><strong>11、passdb backend</strong><br>密码数据库格式,之前samba服务器的用户信息都是以数据文件信息存放，为了加快速度, 目前密码文件已经转为使用数据库了! 默认的数据库格式为tdbsam ,存放在&#x2F;var&#x2F;lib&#x2F;samba&#x2F;private&#x2F;passdb.tdb，早期使用smbpasswd命令来管理用户密码， 后来使用 TDB 数据库,因此建议使用新的 pdbedit 指令来管理用户数据smbpasswd仍然可以使用。默认设置如下：</p>
+<p>passdb backend &#x3D; tdbsam<br>-——————————————————<br><strong>12、obey pam restrictions</strong><br>在Samba中集成PAM的访问控制功能。默认设置如下：</p>
+<p>obey pam restrictions &#x3D; yes<br>-——————————————————<br><strong>13、 unix password sync &#x3D; yes</strong><br>当用户改变samba加密的密码时,SAMBA会试着更新UNIX用户密码。默认设置如下：</p>
+<p>unix password sync &#x3D; yes<br>-——————————————————<br><strong>14、passwd program</strong><br>这个就指定更改密码的命令。默认设置如下：</p>
+<p>passwd program &#x3D; &#x2F;usr&#x2F;bin&#x2F;passwd %u<br>-——————————————————<br><strong>15、passwd chat</strong><br>更改密码时的对话。默认设置如下：</p>
+<p>passwd chat &#x3D; <em>Enter\snew\s</em>\spassword:* %n\n <em>Retype\snew\s</em>\spassword:* %n\n <em>password\supdated\ssuccessfully</em> .<br>-——————————————————<br><strong>16、pam password change</strong><br>为samba打开pam改变密码控制机制的支持。默认设置如下：</p>
+<p>pam password change &#x3D; yes</p>
+<p>-——————————————————<br><strong>17、map to guest</strong><br>这个配置的意思是将所有samba系统主机所不能正确识别的用户都映射成guest用户。默认设置如下：</p>
+<p>map to guest &#x3D; bad user<br>-——————————————————<br><strong>18、usershare max shares</strong><br>最大用户共享数量，0表示禁用用户共享。默认设置如下：</p>
+<p>usershare max shares &#x3D; 100<br>-——————————————————<br><strong>19、usershare allow guests</strong><br>是否允许guest用户访问，这相当于在共享定义中设置guest ok &#x3D; yes选项,最终以共享中的设置为准。</p>
+<p>usershare allow guests &#x3D; yes<br>-——————————————————</p>
+<p>以下是smb.conf配置文件中没有提到的，但是可以通过testparm -v 命令查看到默认设置，如果不符合自己的实际设置，可以在配置文件中加入相应<br>的选项。<br>-——————————————————<br><strong>20、netbios name &#x3D; DEBIAN</strong></p>
+<p>设置Samba Server的NetBIOS名称，在“网上邻居”中显示的主机名，如果不填，则默认会使用该服务器的DNS名称的第一部分。<br>-——————————————————<br><strong>21、server string &#x3D; Samba 4.5.12-Debian</strong></p>
+<p>设定 Samba Server 的注释，可以是任何字符串，也可以不填。宏%v表示显示Samba的版本号。<br>-——————————————————<br><strong>22、hosts allow &#x3D; 127. 192.168.1. 192.168.10.1</strong><br>设置允许连接到Samba Server的客户端，多个参数以空格隔开。可以用一个IP表示，也可以用一个网段表示。这选项也可以<br>在共享段起作用，只对某个共享的目录单独起作用。</p>
+<p>hosts deny 与hosts allow 刚好相反。</p>
+<p>ALL 表示所有用户，例如：hosts allow &#x3D; ALL</p>
+<p>EXCEPT 表示排除，例如：允许除192.168.1.100以为的所有主机访问，格式为 hosts allow &#x3D; ALL EXCEPT 192.168.1.100</p>
+<p>-——————————————————<br><strong>23、max connections &#x3D; 0</strong></p>
+<p>max connections用来指定连接Samba Server的最大连接数目。如果超出连接数目，则新的连接请求将被拒绝。0表示不限制。<br>-——————————————————<br><strong>24、deadtime &#x3D; 0</strong></p>
+<p>deadtime用来设置断掉一个没有打开任何文件的连接的时间。单位是分钟，0代表Samba Server不自动切断任何连接。<br>-——————————————————<br><strong>25、time server &#x3D; yes&#x2F;no</strong></p>
+<p>time server用来设置让nmdb成为windows客户端的时间服务器<br>-——————————————————<br><strong>26、security &#x3D; user</strong></p>
+<p>设置用户访问Samba Server的验证方式，一共有四种验证方式。<br>\1. user：Samba Server共享目录只能被授权的用户访问,由Samba Server负责检查账号和密码的正确性。账号和密码要在本Samba Server中建立。<br>\2. domain：域安全级别,使用主域控制器(PDC)来完成认证。<br>\3. auto:这是Samba中的默认安全设置，Samba会通过服务器角色参数(如果设置)来确定安全模式。<br>\4. ads：在此模式下，Samba将充当ADS领域中的域成员</p>
+<p>在samba4中share 和 server验证方式已被弃用<br>-——————————————————<br><strong>27、encrypt passwords &#x3D; yes&#x2F;no</strong></p>
+<p>是否将认证密码加密。因为现在windows操作系统都是使用加密密码，所以一般要开启此项。不过配置文件默认已开启。<br>-——————————————————<br><strong>28、username map &#x3D; &#x2F;etc&#x2F;samba&#x2F;smbusers</strong></p>
+<p>用来定义用户名映射，比如可以将root换成administrator、admin等。不过要事先在smbusers文件中定义好。比如：root &#x3D; administrator admin，这样就可以用administrator或admin这两个用户来代替root登陆Samba Server，更贴近windows用户的习惯。<br>-——————————————————<br><strong>29、guest account &#x3D; nobody</strong></p>
+<p>用来设置Samba中guest用户对用的系统用户名。<br>-——————————————————<br><strong>30、load printers &#x3D; yes&#x2F;no</strong></p>
+<p>设置是否在启动Samba时就共享打印机。现行几乎都是网络打印机了，默认关闭就可以，这里也不讨论打印机的问题。<br>-——————————————————<br><strong>31、 smb ports &#x3D; 139 445</strong><br>指定服务监听SMB流量的端口。</p>
+<p><strong>五、常用的共享选项及说明</strong></p>
+<p>在该段中指定了一个通过Samba进行共享的目录，定义用户访问该目录的各种设置。如下所示：</p>
+<p>**[共享名称]**：这个共享名称很重要，它是一个代号而已，用户在“网上邻居”中所看到的共享目录名</p>
+<p><strong>comment &#x3D; 任意字符串</strong><br>说明：comment是对该共享的描述，可以是任意字符串。</p>
+<p><strong>path &#x3D; 共享目录路径</strong><br>说明：path用来指定共享目录的路径。可以用%u、%m这样的宏来代替路径里的unix用户和客户机的Netbios名，用宏表示主要用于[homes]共享域。例如：如果我们不打算用home段做为客户的共享，而是在&#x2F;home&#x2F;share&#x2F;下为每个Linux用户以他的用户名建个目录，作为他的共享目录，这样path就可以写成：path &#x3D; &#x2F;home&#x2F;share&#x2F;%u; 。用户在连接到这共享时具体的路径会被他的用户名代替，要注意这个用户名路径一定要存在，否则，客户机在访问时会找不到网络路径。同样，如果我们不是以用户来划分目录，而是以客户机来划分目录，为网络上每台可以访问samba的机器都各自建个以它的netbios名的路径，作为不同机器的共享资源，就可以这样写：path &#x3D; &#x2F;home&#x2F;share&#x2F;%m 。</p>
+<p><strong>browseable &#x3D; yes&#x2F;no</strong><br>说明：browseable用来指定该共享是否在“网上邻居”中可见。</p>
+<p><strong>writable &#x3D; yes&#x2F;no</strong><br>说明：writable用来指定该共享路径是否可写。</p>
+<p><strong>read only &#x3D; yes&#x2F;no</strong><br>说明：设置共享目录为只读，这个选项和writable是互斥的，最好不要两个同时出现如果同时出现，那么最后出现的那个设置为主要的设置。</p>
+<p><strong>available &#x3D; yes&#x2F;no</strong><br>说明：available用来指定该共享资源是否可用。</p>
+<p><strong>admin users &#x3D; 该共享的管理者</strong><br>说明：admin users用来指定该共享的管理员（对该共享具有完全控制权限）。在samba 3.0中，如果用户验证方式设置成“security&#x3D;share”时，此项无效。<br>例如：admin users &#x3D;bobyuan，jane（多个用户中间用逗号隔开）。</p>
+<p><strong>valid users &#x3D; 允许访问该共享的用户</strong><br>说明：valid users用来指定允许访问该共享资源的用户。<br>例如：valid users &#x3D; bobyuan，@bob，@tech（多个用户或者组中间用逗号隔开，如果要加入一个组就用“@+组名”表示。）</p>
+<p><strong>invalid users &#x3D; 禁止访问该共享的用户</strong><br>说明：invalid users用来指定不允许访问该共享资源的用户。<br>例如：invalid users &#x3D; root，@bob（多个用户或者组中间用逗号隔开。）</p>
+<p><strong>write list &#x3D; 允许写入该共享的用户</strong><br>说明：write list用来指定可以在该共享下写入文件的用户。<br>例如：write list &#x3D; bobyuan，@bob</p>
+<p><strong>public &#x3D; yes&#x2F;no</strong><br>说明：public用来指定该共享是否允许guest账户访问。</p>
+<p><strong>guest ok &#x3D; yes&#x2F;no</strong><br>说明：意义同“public”。</p>
+<p><strong>create mask &#x3D; 0700</strong><br>说明：指定用户通过Samba在该共享目录中创建文件的默认权限。0600代表创建文件的权限为rw——-</p>
+<p><strong>directory mask &#x3D; 0700</strong><br>说明：指定用户通过Samba在该共享目录中创建目录的默认权限。0600代表创建目录的权限为rwx——</p>
+<p><strong>更多设置参考官方文档：</strong><br><a target="_blank" rel="noopener" href="https://www.samba.org/samba/docs/man/">https://www.samba.org/samba/docs/man/</a></p>
+<p><strong>六、配置文件生效与检验</strong><br>1、与大部分程序配置文件一样，smb.comf文件被修改后并不会立刻生效，需要重启smbd和nmbd服务。在完成配置文件我们需要用testparm命令来验证文件的格式是否正确，命令如下：</p>
+<p>root@debian:~# testparm<br>参数<br>-v：查阅完整的参数设置，连同默认值也会显示出来</p>
+<p>-—————————————————————————————————————————<br>root@debian:~# testparm   #进行检测<br>Load smb config files from &#x2F;etc&#x2F;samba&#x2F;smb.conf<br>rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)<br>WARNING: The “syslog” option is deprecated<br>Processing section “[homes]”<br>Processing section “[printers]”<br>Processing section “[print$]”<br>Loaded services file OK.     #如果格式没有问题将不会看到任何错误信息，如果这行的前面有Unknown parameter encountered:字样的提示就说明有错误。<br>Server role: ROLE_STANDALONE</p>
+<p>Press enter to see a dump of your service definitions   #回车后将会显示smb.conf文件当前的配置内容</p>
+<p># Global parameters<br>[global]<br>    log file &#x3D; &#x2F;var&#x2F;log&#x2F;samba&#x2F;log.%m<br>    max log size &#x3D; 1000<br>    syslog &#x3D; 0<br>    panic action &#x3D; &#x2F;usr&#x2F;share&#x2F;samba&#x2F;panic-action %d<br>    —-后面的省略—-<br>-—————————————————————————————————————————————<br>如果输出中没有任何错误或警告信息，表示文件格式没有问题。否则，输出结果中将会给出错误的地方以及错误的原因。</p>
+<p>2、重启服务<br>-——————————————————–<br>root@debian:<del># systemctl restart smbd.service<br>root@debian:</del># systemctl restart nmbd.service<br>-——————————————————–</p>
+<p><strong>七、Samba用户管理</strong><br>Samba的用户是与操作系统的用户联系在一起的，在创建Samba用户前，必须先添加一个与之同名的操作系统用户。也就是说Samba的用户必须是操作系统中已经存在的用户，但两者的密码可以不相同。在来说下用户在Windows系统下通过Samba访问Linux系统的权限问题，当我们需要通过Samba所提供的功能来进行Linux的访问时，Linux上面的文件或目录是否可读写还要取决于Linux系统上的用户是否对该文件可读写，所以在Windows上访问Samba服务器时，要看Samba对应的用户对Linux系统的文件是否可读写，同时Samba配置文件也会限制读写权限。例如：当Samba用户A要对Linux上面的T文件进行写的时候，smb.conf的配置文件中的共享设置要具有可写的权限，A用户对应的Linux用户也要对T文件有写的权限。</p>
+<p>Samba用户通过pdbedit命令进行管理。命令用法如下：</p>
+<p>root@debian:~# pdbedit 参数</p>
+<p>参数：<br> –a username：新建Samba账户。<br> –x username：删除Samba账户。<br> –L：列出Samba用户列表，读取passdb.tdb数据库文件。<br> –Lv：列出Samba用户列表的详细信息。<br> –c “[D]” –u username：暂停该Samba用户的账号。<br> –c “[]” –u username：恢复该Samba用户的账号。</p>
+<p>举例：<br>-————————————————————————–<br>root@debian:~#  laopi    #创建laopi用户<br>new password:<br>retype new password:<br>Unix username:    laopi<br>NT username:<br>Account Flags:    [U     ]<br>User SID:       S-1-5-21-291817948-1651959474-771318032-1000<br>Primary Group SID:  S-1-5-21-291817948-1651959474-771318032-513<br>Full Name:      Laopi<br>Home Directory:    \debian\laopi<br>HomeDir Drive:<br>Logon Script:<br>Profile Path:     \debian\laopi\profile<br>Domain:        DEBIAN<br>Account desc:<br>Workstations:<br>Munged dial:<br>Logon time:      0<br>Logoff time:     三, 06 2月 2036 23:06:39 CST<br>Kickoff time:     三, 06 2月 2036 23:06:39 CST<br>Password last set:  三, 19 12月 2018 12:14:24 CST<br>Password can change: 三, 19 12月 2018 12:14:24 CST<br>Password must change: never<br>Last bad password  : 0<br>Bad password count : 0<br>Logon hours     : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
+<p>root@debian:~# pdbedit -L       #查询目前已经存在的Samba帐号<br>laopi:1000:Laopi</p>
+<p>root@debian:~# smbpasswd laopi     #通过smbpasswd命令修改帐号密码<br>-———————————————————————-</p>
+<p>如果要添加额外的Samba用户帐号，若该帐号原本不存在，则先使用useradd添加系统帐号，再通过pdbedit -a命令添加Samba用户帐号。</p>
+<p><strong>八、用户映射</strong><br>由于Samba用户必须要与操作系统用户同名，出于系统安全或使用习惯的考虑，我们可以把上面的laopi用户映射为administrator用户或admin用户，映射后就无需在添加administrator或admin用户了，也可以防止Samba用户通过Samba帐号来猜测操作系统用户的信息。映射后的用户其权限和密码都和laopi一样，映射步骤如下：</p>
+<p>1、编辑smb.conf文件，在[global]部分添加用户映射文件（该文件由用户手动创建，可以把他放在系统可以访问的任何位置），添加内容如下所示：</p>
+<p>username map &#x3D; &#x2F;etc&#x2F;samba&#x2F;smbusers      #一般文件都放在这里</p>
+<p>2、手动创建用户映射文件&#x2F;etc&#x2F;samba&#x2F;smbusers ，该文件的格式如下：</p>
+<p>Samba用户帐号 &#x3D; 需要映射的用户列表</p>
+<p>列表中的用户名之间以空格进行分割，如下所示。</p>
+<p>root@debian:~# vim.tiny &#x2F;etc&#x2F;samba&#x2F;smbusers</p>
+<p>laopi &#x3D; administrator admin</p>
+<p>3、重启smbd和nmbd服务</p>
+<p><strong>九、配置实例</strong></p>
+<p>1、不需要密码的共享，我们有时候需要将某个目录共享给所有人访问，要求&#x2F;home&#x2F;share1目录所有人都可以读写，&#x2F;home&#x2F;share2目录所有人只读，我们需要先把这两个目录的权限给成777,这样任何人才可以对目录进行操作，smb.conf配置文件如下：</p>
+<p>-———————————————————————————————————————</p>
+<p>#&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; Global Settings &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>[global]</p>
+<p>  workgroup &#x3D; WORKGROUP</p>
+<p>  dns proxy &#x3D; no</p>
+<p>  log file &#x3D; &#x2F;var&#x2F;log&#x2F;samba&#x2F;log.%m</p>
+<p>  max log size &#x3D; 1000</p>
+<p>  syslog &#x3D; 0</p>
+<p>  panic action &#x3D; &#x2F;usr&#x2F;share&#x2F;samba&#x2F;panic-action %d</p>
+<p>  server role &#x3D; standalone server</p>
+<p>  passdb backend &#x3D; tdbsam</p>
+<p>  obey pam restrictions &#x3D; yes</p>
+<p>  unix password sync &#x3D; yes</p>
+<p>  passwd program &#x3D; &#x2F;usr&#x2F;bin&#x2F;passwd %u<br>  passwd chat &#x3D; <em>Enter\snew\s</em>\spassword:* %n\n <em>Retype\snew\s</em>\spassword:* %n\n <em>password\supdated\ssuccessfully</em> .</p>
+<p>  pam password change &#x3D; yes</p>
+<p>  map to guest &#x3D; bad user          #这行很重要决定任何用户是否可以访问</p>
+<p>  usershare allow guests &#x3D; yes        #这行没什么用主要由共享段的设置决定</p>
+<p>  netbios name &#x3D; SAMBA-DEBIAN        #这行上面的都是系统默认配置的保持不变即可</p>
+<p>#&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; Share Definitions &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>[share1]<br>  comment &#x3D; guest<br>  browseable &#x3D; yes<br>  path &#x3D; &#x2F;home&#x2F;share1<br>  available &#x3D; yes<br>  guest ok &#x3D; yes<br>  writable &#x3D; yes<br>  create mask &#x3D; 0700<br>  directory mask &#x3D; 0700</p>
+<p>[share2]<br>  comment &#x3D; guest<br>  browseable &#x3D; yes<br>  path &#x3D; &#x2F;home&#x2F;share2<br>  available &#x3D; yes<br>  guest ok &#x3D; yes<br>  read only &#x3D; yes</p>
+<p> -————————————————————————————————————-  </p>
+<p><strong>十、防火墙设置</strong><br>Samba中默认会启用多个端口，这包括数据传输的TCP端口139,445,以及进行NetBIOS名称解析之类工作的UDP端口137,138,我们如果只是为了传输数据可以只开放445端口，前提是smb ports &#x3D; 的选项中有445端口，我们也可以配置smb ports &#x3D; 445 ，这样Samba就只监听445端口，这样配置完在Windows中“桌面”上的“网络”里不会在显示共享的主机，只能通过“运行” 打开 \IP 的方式连接到共享的目录。防火墙具体的配置命令这里就不说了。</p>
+<p>查看smb ports选项默认设置的端口：<br>root@debian:~# testparm -v | grep port</p>
+<p>查看Samba监听的端口号：<br>root@debian:~# netstat -tlunp | grep mbd</p>
+<p><strong>十一、Linux客户端上访问</strong></p>
+<p>Linux客户端上访问Windows系统或Samba服务器上共享资源的方式主要有两种，可以使用smbclient程序访问共享资源，也可以使用mount命令把共享目录挂载到本地目录上使用。</p>
+<p>1、smbclient是Samba所提供的一个类似于FTP的客户端程序，使用smbclient链接到共享的资源后，可以使用ls，get，put等类似于FTP的命令对共享资源进行操作，首先要安装smbclient程序：<br>-————————————–<br>root@debian:~# apt install smbclient<br>-————————————–<br>smbclient命令的格式如下所示：</p>
+<p>smbclient [选项] &#x2F;&#x2F;[address]&#x2F;[共享目录]</p>
+<p>该命令常用的选项及说明如下所示<br>-I&#x3D;IP： 连接指定的IP地址<br>-L&#x3D;Host： 获取指定共享资源列表<br>-p&#x3D;Port： 指定要连接的共享资源服务器端口号<br>-U&#x3D;Username： 指定连接共享服务器使用的用户帐号<br>-N： 不要求输入密码<br>-？：显示命令的帮助信息<br>-V ：显示命令的版本信息</p>
+<p>例如要查看共享服务器192.168.1.30上的共享资源列表，命令如下：<br>-———————————————————————<br>root@debian:~# smbclient -L&#x3D;192.168.1.30 -U administrator<br>WARNING: The “syslog” option is deprecated<br>Enter administrator’s password:          #要求输入administrator帐号的密码<br>Domain&#x3D;[VIRTUALBOX-PC] OS&#x3D;[Windows 7 Ultimate 7601 Service Pack 1] Server&#x3D;[Windows 7 Ultimate 6.1]</p>
+<p>   Sharename    Type   Comment</p>
+<hr>
+<p>   ADMIN$     Disk   远程管理<br>   C$       Disk   默认共享<br>   IPC$      IPC    远程 IPC<br>   windd      Disk<br>Connection to 192.168.1.30 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)<br>NetBIOS over TCP disabled – no workgroup available<br>root@debian:~#<br>-———————————————————————<br>通过上面的查看可以看到共享的资源为windd</p>
+<p>通过smbclient命令登录到共享主机资源，命令如下：<br>-———————————————————————<br>root@debian:~# smbclient &#x2F;&#x2F;192.168.1.30&#x2F;windd -U administrator<br>WARNING: The “syslog” option is deprecated<br>Enter administrator’s password:<br>Domain&#x3D;[VIRTUALBOX-PC] OS&#x3D;[Windows 7 Ultimate 7601 Service Pack 1] Server&#x3D;[Windows 7 Ultimate 6.1]<br>smb: &gt;<br>-———————————————————————<br>在smb: &gt;下面其实就是在 &#x2F;&#x2F;192.168.1.30&#x2F;windd这个目录下，我们可以使用ls，get，put等命令进行数据的传输，常用命令如下：</p>
+<p>? :列出所有可以使用的命令<br>cd ：远程共享主机上切换目录<br>del ：删除某个文件<br>lcd ：本机主机上切换目录<br>ls ：查看当前所在目录的文件<br>get ：下载文件<br>put : 上传文件<br>rm ： 删除文件<br>exit ：退出</p>
+<p>2、通过mount命令挂载共享目录到本地。<br>在使用smbclient命令一点也不方便直观，其实除了smbclient为，Linux客户端也可以像NFS一样使用mount命令把远程的共享文件夹挂载到本地的目录上进行使用。挂载后对共享文件夹的访问就像操作本地目录一样方便。首先需要安装cifs-utils软件包（以及cifs-utils依赖的软件包）：<br>-——————————————–<br>root@debian:~# apt install cifs-utils<br>-——————————————–</p>
+<p>挂载命令如下：</p>
+<p>root@debian:~# mount.cifs &#x2F;&#x2F;[address]&#x2F;[folder] -o user&#x3D;[username] [mount point]</p>
+<p>root@debian:~# mount -t cifs &#x2F;&#x2F;[address]&#x2F;[folder] -o user&#x3D;[username] [mount point]</p>
+<p>root@debian:~# mount -t cifs &#x2F;&#x2F;[address]&#x2F;[folder] -o domain&#x3D;[domain_name],user&#x3D;[username] [mount point]</p>
+<p>[address]是windows的IP地址，[folder]是windows下的共享目录，[username]是window下的设置folder共享时的用户，如果该用户使用域管理（如企业或组织用户），需要设置domain ；[mount point]是Linux系统上的挂在点，mount.cifs命令可以取代mount -t cifs命令。</p>
+<p>挂在举例：将共享文件windd挂载到linux系统的&#x2F;mnt目录，共享用户为administrator<br>-——————————————————————————————————————–<br>root@debian:<del># mount.cifs &#x2F;&#x2F;192.168.1.27&#x2F;windd -o user&#x3D;administrator &#x2F;mnt&#x2F;<br>Password for administrator@&#x2F;&#x2F;192.168.1.27&#x2F;windd: ********          #这里要求输入共享用户administrator的密码<br>root@debian:</del>#<br>-———————————————————————————————————————</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/03/%E6%82%A0%E5%93%89%E6%B8%B8%E5%93%89/" rel="prev" title="悠哉游哉">
+      <i class="fa fa-chevron-left"></i> 悠哉游哉
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/02/%E4%BD%A0%E6%B0%B8%E8%BF%9C%E6%9C%89%E5%81%9A%E4%B8%8D%E5%AE%8C%E7%9A%84%E4%BA%8B/" rel="next" title="你永远有做不完的事">
+      你永远有做不完的事 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">带头大哥23b</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">带头大哥23b</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+    <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-calendar/calendar.min.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-calendar/languages.min.js"></script>
+    <script>
+    $(function() {
+        $('#CloudCalendar').aCalendar('zh-CN',
+            $.extend(
+                '', {
+                    single:true,
+                    root:'/calendar/'
+                }
+            )
+        );
+    });
+    </script>
+
+
+</body>
+</html>
