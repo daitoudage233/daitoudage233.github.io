@@ -12,11 +12,13 @@
 | `2022/`、`2023/` | 文章正文页，路径形如 `<年>/<月>/<日>/<标题>/index.html` |
 | `archives/` | 归档页（按年、按月，带分页） |
 | `tags/` | 标签页 |
+| `catalog/` | **目录页**：一页列出全部 35 篇文章，<https://daitoudage233.github.io/catalog/> |
 | `css/`、`js/`、`lib/`、`images/` | NexT 主题的样式、脚本与图标 |
 | `calendar.json` | 侧边栏日历的数据文件 |
 | `.nojekyll` | 告诉 GitHub Pages 原样发布这些文件，不要再套一层 Jekyll 处理 |
 | `posts/` | **文章正文的 Markdown 版本**（见下一节） |
 | `tools/extract_posts.py` | 生成 `posts/` 的提取脚本 |
+| `tools/make_catalog.py` | 生成 `catalog/` 目录页，并给所有页面加上菜单入口 |
 
 共 **35 篇文章**：2022 年 31 篇，2023 年 4 篇。
 
@@ -55,6 +57,22 @@ python3 tools/extract_posts.py --check    # 只统计每篇的日期、标题、
 
 脚本只读取 `2022/`、`2023/` 目录下的 `index.html`，**不会改动已经发布的站点**，线上页面照旧可访问。
 
+## 关于 catalog/：目录页
+
+站点自带的 `/archives/` 被生成成了「每页一篇」（还混着上一次生成留下的旧页），翻起来很费劲，
+所以 `tools/make_catalog.py` 另外生成了一个单页目录 `catalog/index.html`：按年份倒序列出全部文章，
+每篇带日期、标签和直达链接，顶部还有篇数统计和标签索引。脚本同时做两件事：
+
+```sh
+python3 tools/make_catalog.py            # 生成/刷新 catalog/，给所有页面加菜单入口
+python3 tools/make_catalog.py --check    # 只报告会改什么，不写文件
+```
+
+- 给所有页面的导航菜单加上「目录」入口（已经有的会跳过，可以反复执行）；
+- 顺手把侧栏和归档页里过期的篇数改对：生成时写的是 17，实际是 35 篇。
+
+导航里现在是这样：**首页 · 归档 · 目录**。
+
 ## 站点是怎么搭的
 
 - 博客框架：Hexo 6.1.0（页面里的 `<meta name="generator">` 写着版本号）
@@ -73,6 +91,7 @@ python3 tools/extract_posts.py --check    # 只统计每篇的日期、标题、
 1. **改内容**：编辑 `posts/` 里对应的 Markdown，或者用这些 Markdown 把 Hexo 站点恢复出来
    （正文和 front matter 放进 `source/_posts/` 就能直接用）。
 2. **重新生成**：装好 Hexo 与 NexT 主题后 `hexo generate`，把生成结果覆盖到仓库根目录再提交。
+   新增的文章页提交后，再跑一次 `python3 tools/make_catalog.py` 就能出现在目录页里。
 3. 只想改个错别字也可以直接改对应的 `index.html`，但下次重新生成会被覆盖，所以还是推荐走前两步。
 
 ## 版权
